@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Pigmie Record Management System - Track daily customer payments, loans, and financial records efficiently.">
+    <title>Pigmie Record Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Kannada:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">₹</div>
+                <div class="logo-text">
+                    <h1 data-i18n="appName">Pigmie</h1>
+                    <span data-i18n="appSubtitle">Record Manager</span>
+                </div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
+                <span data-i18n="navDashboard">Dashboard</span>
+            </button>
+            <button class="nav-item" data-view="customers" onclick="switchView('customers')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span data-i18n="navCustomers">Customers</span>
+            </button>
+            <button class="nav-item" data-view="daily-entry" onclick="switchView('daily-entry')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 20V10" />
+                    <path d="M18 20V4" />
+                    <path d="M6 20v-4" />
+                </svg>
+                <span data-i18n="navDailyEntry">Daily Entry</span>
+            </button>
+                <li class="nav-item" data-view="records" onclick="switchView('records')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                    <span data-i18n="navRecords">Records</span>
+                </li>
+                <li class="nav-item" data-view="reports" onclick="switchView('reports')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                    <span data-i18n="navReports">Reports</span>
+                </li>
+                <li class="nav-item" data-view="settings" onclick="switchView('settings')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                <span data-i18n="navSettings">Settings</span>
+            </li>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="date-display" id="currentDate"></div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+            <h2 class="page-title" id="pageTitle">Dashboard</h2>
+            <div class="topbar-actions">
+                <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()" title="Switch Language">
+                    <span class="lang-label" id="langLabel">ಕನ್ನಡ</span>
+                </button>
+                <button class="btn btn-primary" id="topAction" onclick="handleTopAction()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    <span id="topActionText">Add Customer</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard View -->
+        <section class="view active" id="view-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card stat-card-primary">
+                    <div class="stat-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label" data-i18n="statTotalCustomers">Total Customers</span>
+                        <span class="stat-value" id="statTotalCustomers">0</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-success">
+                    <div class="stat-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label" data-i18n="statTotalCollected">Total Collected</span>
+                        <span class="stat-value" id="statTotalCollected">₹0</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-warning">
+                    <div class="stat-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label" data-i18n="statPendingAmount">Pending Amount</span>
+                        <span class="stat-value" id="statPendingAmount">₹0</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-info">
+                    <div class="stat-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label" data-i18n="statTodayCollection">Today's Collection</span>
+                        <span class="stat-value" id="statTodayCollection">₹0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Analytics Section -->
+            <div class="dashboard-analytics" style="margin-bottom: 20px;">
+                <div class="card analytics-card">
+                    <div class="card-header">
+                        <h3 data-i18n="collectionEfficiency">Today's Collection Efficiency</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="efficiency-stats">
+                            <div class="efficiency-text">
+                                <span id="effExpected" class="eff-expected">Expected: ?0</span>
+                                <span id="effActual" class="eff-actual">Actual: ?0</span>
+                            </div>
+                            <span id="effPercentage" class="eff-percentage">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="effProgressBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card recent-activity">
+                    <div class="card-header">
+                        <h3 data-i18n="recentPayments">Recent Payments</h3>
+                    </div>
+                    <div class="card-body" id="recentPayments">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" opacity="0.4">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                            </svg>
+                            <p data-i18n="noPaymentsYet">No payments recorded yet</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card upcoming-deadlines">
+                    <div class="card-header">
+                        <h3 data-i18n="upcomingDeadlines">Upcoming Deadlines</h3>
+                    </div>
+                    <div class="card-body" id="upcomingDeadlines">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" opacity="0.4">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            <p data-i18n="noUpcomingDeadlines">No upcoming deadlines</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Attention Needed Section -->
+                <div class="card attention-needed">
+                    <div class="card-header">
+                        <h3 data-i18n="attentionNeeded" style="color: var(--danger-color);">Attention Needed</h3>
+                    </div>
+                    <div class="card-body" id="attentionNeededList">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" opacity="0.4">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                            <p data-i18n="noMissedPayments">All customers are up to date</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Customers View -->
+        <section class="view" id="view-customers">
+            <div class="customer-controls-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; flex-wrap: wrap;">
+                <div class="customer-filter-bar" style="margin-bottom: 0;">
+                    <button class="filter-btn active" data-filter="all" onclick="setCustomerFilter('all')" data-i18n="filterAll">All</button>
+                    <button class="filter-btn" data-filter="active" onclick="setCustomerFilter('active')" data-i18n="filterActive">Active</button>
+                    <button class="filter-btn" data-filter="closed" onclick="setCustomerFilter('closed')" data-i18n="filterClosed">Closed</button>
+                </div>
+                <div class="customer-sort-dropdown">
+                    <select id="customerSort" onchange="refreshCustomersView()" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 12px; border-radius: var(--radius-md); font-size: 0.9rem; outline: none; font-family: inherit;">
+                        <option value="name-asc" data-i18n="sortNameAsc">Name (A-Z)</option>
+                        <option value="name-desc" data-i18n="sortNameDesc">Name (Z-A)</option>
+                        <option value="amount-desc" data-i18n="sortAmountDesc">Amount (High-Low)</option>
+                        <option value="deadline-asc" data-i18n="sortDeadlineAsc">Deadline (Closest)</option>
+                        <option value="newest" data-i18n="sortNewest">Recently Added</option>
+                    </select>
+                </div>
+            </div>
+            <div class="search-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="text" id="customerSearch" data-i18n-placeholder="searchCustomersPlaceholder"
+                    placeholder="Search customers by name or phone..." oninput="filterCustomers()">
+            </div>
+            <div class="customers-list" id="customersList">
+                <div class="empty-state">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        opacity="0.3">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <p data-i18n="noCustomersYet">No customers added yet</p>
+                    <span data-i18n="clickAddCustomer">Click "Add Customer" to get started</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Entry View -->
+        <section class="view" id="view-daily-entry">
+            <div class="daily-entry-header">
+                <div class="search-bar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input type="text" id="dailySearch" data-i18n-placeholder="searchCustomerPlaceholder"
+                        placeholder="Search customer..." oninput="refreshDailyEntryView()">
+                </div>
+                
+                <div class="daily-entry-controls">
+                    <input type="date" id="entryDate" onchange="refreshDailyEntryView()">
+                    <select id="areaFilter" onchange="refreshDailyEntryView()">
+                        <option value="all" data-i18n="allAreas">All Areas</option>
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Bulk Action Bar -->
+            <div class="bulk-action-bar" id="bulkActionBar" style="display: none;">
+                <span id="bulkSelectedCount">0 selected</span>
+                <button class="btn btn-primary" onclick="openBulkCollectModal()" data-i18n="btnBatchCollect">Batch Collect</button>
+            </div>
+
+            <div class="daily-entry-list" id="dailyEntryList">
+                <div class="empty-state">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        opacity="0.3">
+                        <path d="M12 20V10" />
+                        <path d="M18 20V4" />
+                        <path d="M6 20v-4" />
+                    </svg>
+                    <p data-i18n="noCustomersToShow">No customers to show</p>
+                    <span data-i18n="addCustomersFirst">Add customers first to start daily entries</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Records View -->
+        <section class="view" id="view-records">
+            <div class="records-controls">
+                <div class="search-bar compact">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input type="text" id="recordsSearch" data-i18n-placeholder="searchCustomerPlaceholder"
+                        placeholder="Search customer..." oninput="filterRecords()">
+                </div>
+                <input type="date" id="recordFilterDate" onchange="refreshRecordsList()">
+            </div>
+            <div class="records-list" id="recordsList">
+                <!-- Rendered dynamically by JS -->
+            </div>
+        </section>
+
+        <!-- Reports View -->
+        <section class="view" id="view-reports">
+            <div class="reports-grid">
+                <!-- Summary Cards -->
+                <div class="report-summary-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success-400)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label" data-i18n="reportsThisMonth">This Month</span>
+                            <span class="stat-value" id="reportMonthlyCollected">₹0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(99, 102, 241, 0.1); color: var(--primary-400)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label" data-i18n="reportsActiveLoans">Active Loans</span>
+                            <span class="stat-value" id="reportActiveLoans">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger-400)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label" data-i18n="reportsDefaulters">Defaulters</span>
+                            <span class="stat-value" id="reportDefaultersCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collection Trend Chart -->
+                <div class="chart-section">
+                    <h3 data-i18n="reportsCollectionTrend">Collection Trend (Last 30 Days)</h3>
+                    <div class="chart-container">
+                        <canvas id="collectionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Defaulters List -->
+                <div class="defaulters-section">
+                    <h3 data-i18n="reportsDefaultersList">Defaulters List (>3 Days Overdue)</h3>
+                    <div class="defaulters-list" id="defaultersList">
+                        <!-- Rendered dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- Data Export -->
+                <div class="export-section" style="margin-top: 24px;">
+                    <h3 data-i18n="reportsDataExport">Data Export (Excel/CSV)</h3>
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <button class="btn btn-success" onclick="exportToCSV('customers')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="12" y1="18" x2="12" y2="12"></line>
+                                <polyline points="9 15 12 18 15 15"></polyline>
+                            </svg>
+                            <span data-i18n="exportCustomers">Export Customers</span>
+                        </button>
+                        <button class="btn btn-primary" onclick="exportToCSV('payments')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="12" y1="18" x2="12" y2="12"></line>
+                                <polyline points="9 15 12 18 15 15"></polyline>
+                            </svg>
+                            <span data-i18n="exportPayments">Export Payments</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings View -->
+        <section class="view" id="view-settings">
+            <div class="settings-container" id="settingsContainer">
+                <div class="settings-section">
+                    <div class="settings-section-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        <h3 data-i18n="appearance">Appearance</h3>
+                    </div>
+                    <div class="settings-section-body">
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <div class="settings-item-label" data-i18n="themeMode">Theme Mode</div>
+                                <div class="settings-item-desc" data-i18n="themeModeDesc">Switch between Light and Dark mode.</div>
+                            </div>
+                            <div class="settings-item-action">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add/Edit Customer Modal -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Customer</h3>
+                <button class="modal-close" onclick="closeCustomerModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <form id="customerForm" onsubmit="saveCustomer(event)">
+                <input type="hidden" id="customerId">
+                
+                <div class="photo-upload-section">
+                    <label class="photo-upload-label" data-i18n="lblCustomerPhoto">Customer Photo</label>
+                    <div class="photo-upload-wrapper">
+                        <div class="photo-preview" id="photoPreview">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        </div>
+                        <input type="file" id="customerPhotoInput" accept="image/*" capture="environment" onchange="handleImageUpload(event, 'photoPreview', 'customerPhotoBase64')">
+                        <input type="hidden" id="customerPhotoBase64">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="customerName" data-i18n-html="labelCustomerName">Customer Name <span
+                            class="required">*</span></label>
+                    <input type="text" id="customerName" required data-i18n-placeholder="phCustomerName"
+                        placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone" data-i18n-html="labelPhone">Phone Number <span
+                            class="required">*</span></label>
+                    <input type="tel" id="customerPhone" required data-i18n-placeholder="phPhone"
+                        placeholder="Enter phone number" pattern="[0-9]{10}"
+                        title="Please enter a valid 10-digit phone number">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="lblCustomerArea">Area / Route</label>
+                    <input type="text" id="custArea" placeholder="e.g. Market, Village A">
+                </div>
+                
+                <div class="form-group">
+                    <label data-i18n="lblIdProof">ID Proof (Optional)</label>
+                    <div class="id-upload-wrapper" id="idProofWrapper">
+                        <span class="id-upload-text" id="idProofText" data-i18n="uploadIdProof">Upload ID Proof</span>
+                        <input type="file" id="idProofInput" accept="image/*" capture="environment" onchange="handleImageUpload(event, 'idProofPreviewImg', 'idProofBase64', true)">
+                        <input type="hidden" id="idProofBase64">
+                        <img id="idProofPreviewImg" class="id-preview-img" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="customerType" data-i18n-html="labelCustomerType">Customer Type <span
+                            class="required">*</span></label>
+                    <select id="customerType" required onchange="updateCustomerAmountLabel()">
+                        <option value="loan" data-i18n="loanCustomer">Loan Customer</option>
+                        <option value="saving" data-i18n="savingCustomer">Saving Customer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="loanAmount" data-i18n-html="labelLoanAmount">Loan Amount (₹) <span
+                            class="required">*</span></label>
+                    <input type="number" id="loanAmount" required data-i18n-placeholder="phLoanAmount"
+                        placeholder="Enter loan amount" min="1">
+                </div>
+                <div class="form-group" id="interestRateGroup">
+                    <label for="interestRate" data-i18n-html="labelInterestRate">Interest Rate (% monthly) </label>
+                    <input type="number" id="interestRate" data-i18n-placeholder="phInterestRate"
+                        placeholder="e.g. 2" min="0" max="100" step="0.1" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="issuedDate" data-i18n-html="labelIssuedDate">Issued Date <span
+                            class="required">*</span></label>
+                    <input type="date" id="issuedDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="deadline" data-i18n-html="labelDeadline">Deadline <span
+                            class="required">*</span></label>
+                    <input type="date" id="deadline" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCustomerModal()"
+                        data-i18n="btnCancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn" data-i18n="btnSaveCustomer">Save
+                        Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 id="detailModalTitle" data-i18n="customerRecord">Customer Record</h3>
+                <button class="modal-close" onclick="closeDetailModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="detailModalBody">
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Collect Modal -->
+    <div class="modal-overlay" id="bulkCollectModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3 data-i18n="bulkCollectTitle">Batch Collect</h3>
+                <button class="modal-close" onclick="closeBulkCollectModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label data-i18n="lblBulkAmount">Amount per customer (₹)</label>
+                    <input type="number" id="bulkCollectAmount" required min="1" placeholder="Enter amount">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBulkCollectModal()" data-i18n="btnCancel">Cancel</button>
+                <button class="btn btn-primary" onclick="processBulkCollect()" data-i18n="btnConfirmBulk">Confirm Collection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIN Lock Screen -->
+    <div class="lock-screen" id="lockScreen">
+        <div class="lock-screen-inner">
+            <div class="lock-logo">
+                <div class="lock-logo-icon">₹</div>
+                <h2 data-i18n="appName">Pigmie</h2>
+                <p data-i18n="enterPinToUnlock">Enter PIN to unlock</p>
+            </div>
+            <div class="pin-display">
+                <div class="pin-dot" id="pinDot0"></div>
+                <div class="pin-dot" id="pinDot1"></div>
+                <div class="pin-dot" id="pinDot2"></div>
+                <div class="pin-dot" id="pinDot3"></div>
+            </div>
+            <div class="pin-error" id="pinError"></div>
+            <div class="pin-keypad">
+                <button class="pin-key" onclick="pinKeyPress('1')">1</button>
+                <button class="pin-key" onclick="pinKeyPress('2')">2</button>
+                <button class="pin-key" onclick="pinKeyPress('3')">3</button>
+                <button class="pin-key" onclick="pinKeyPress('4')">4</button>
+                <button class="pin-key" onclick="pinKeyPress('5')">5</button>
+                <button class="pin-key" onclick="pinKeyPress('6')">6</button>
+                <button class="pin-key" onclick="pinKeyPress('7')">7</button>
+                <button class="pin-key" onclick="pinKeyPress('8')">8</button>
+                <button class="pin-key" onclick="pinKeyPress('9')">9</button>
+                <button class="pin-key pin-key-empty"></button>
+                <button class="pin-key" onclick="pinKeyPress('0')">0</button>
+                <button class="pin-key pin-key-delete" onclick="pinKeyDelete()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                        <line x1="18" y1="9" x2="12" y2="15" />
+                        <line x1="12" y1="9" x2="18" y2="15" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set/Change PIN Modal -->
+    <div class="modal-overlay" id="pinModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="pinModalTitle" data-i18n="setPinTitle">Set PIN</h3>
+                <button class="modal-close" onclick="closePinModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="pin-setup-body">
+                <p class="pin-setup-label" id="pinSetupLabel" data-i18n="enterNewPin">Enter new 4-digit PIN</p>
+                <div class="pin-display">
+                    <div class="pin-dot" id="setupPinDot0"></div>
+                    <div class="pin-dot" id="setupPinDot1"></div>
+                    <div class="pin-dot" id="setupPinDot2"></div>
+                    <div class="pin-dot" id="setupPinDot3"></div>
+                </div>
+                <div class="pin-error" id="pinSetupError"></div>
+                <div class="pin-keypad">
+                    <button class="pin-key" onclick="setupPinKeyPress('1')">1</button>
+                    <button class="pin-key" onclick="setupPinKeyPress('2')">2</button>
+                    <button class="pin-key" onclick="setupPinKeyPress('3')">3</button>
+                    <button class="pin-key" onclick="setupPinKeyPress('4')">4</button>
+                    <button class="pin-key" onclick="setupPinKeyPress('5')">5</button>
+                    <button class="pin-key" onclick="setupPinKeyPress('6')">6</button>
+                    <button class="pin-key" onclick="setupPinKeyPress('7')">7</button>
+                    <button class="pin-key" onclick="setupPinKeyPress('8')">8</button>
+                    <button class="pin-key" onclick="setupPinKeyPress('9')">9</button>
+                    <button class="pin-key pin-key-empty"></button>
+                    <button class="pin-key" onclick="setupPinKeyPress('0')">0</button>
+                    <button class="pin-key pin-key-delete" onclick="setupPinKeyDelete()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                            <line x1="18" y1="9" x2="12" y2="15" />
+                            <line x1="12" y1="9" x2="18" y2="15" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for backup import -->
+    <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImportFile(event)">
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3 data-i18n="paymentReceipt">Payment Receipt</h3>
+                <button class="modal-close" onclick="closeReceiptModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="receipt-card" id="receiptContent">
+                    <div class="receipt-header">
+                        <h2 id="receiptBizName">Business Name</h2>
+                        <p id="receiptDate">Date: --</p>
+                    </div>
+                    <div class="receipt-body">
+                        <div class="receipt-row">
+                            <span>Customer:</span>
+                            <strong id="receiptCustName">--</strong>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Amount Paid:</span>
+                            <strong id="receiptAmount" class="receipt-amount">--</strong>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Total Loan:</span>
+                            <strong id="receiptTotalLoan">--</strong>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Pending Balance:</span>
+                            <strong id="receiptPending">--</strong>
+                        </div>
+                    </div>
+                    <div class="receipt-footer">
+                        <p>Thank you!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
+                <button class="btn btn-primary" onclick="shareReceipt()">Share via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ID Proof Viewer Modal -->
+    <div class="modal-overlay" id="idProofModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 data-i18n="idProof">ID Proof</h3>
+                <button class="modal-close" onclick="closeIdProofModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align: center; padding: 0;">
+                <img id="idProofViewerImg" style="max-width: 100%; max-height: 70vh; display: block; margin: 0 auto; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <script src="sync.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
